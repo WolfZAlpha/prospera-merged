@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "install:prod": "npm ci --only=prod --no-optional",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -92,8 +93,5 @@
   },
   "prettier": {
     "printWidth": 160
-  },
-  "optionalDependencies": {
-    "fsevents": "^2.3.2"
-}
+  }
 }
