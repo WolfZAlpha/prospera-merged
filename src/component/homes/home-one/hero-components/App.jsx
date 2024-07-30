@@ -6,6 +6,7 @@ import { Snackbar, LinearProgress, Box, Typography } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import { useEtherBalance, useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
+import useWalletConnection from '@/hooks/useWalletConnection';
 import ParbAbi from "./pros_abi.json";
 
 // Provider and contract setup
@@ -99,22 +100,51 @@ const useIcoData = () => {
     if (!account || !library) {
       throw new Error('Please connect your wallet to purchase tokens.');
     }
-
+  
     const signer = library.getSigner();
     const contract = new ethers.Contract(presaleContractAddress, ParbAbi, signer);
-
+  
     const tokenPrice = ethers.utils.parseUnits(icoData.tokenPrice.toString(), "ether");
     const ethAmount = ethers.BigNumber.from(tokenAmount).mul(tokenPrice).div(ethers.constants.WeiPerEther);
-
+  
+    // Ensure ETH amount is within the allowed limits
+    const minBuy = await contract.getMinIcoBuy();
+    const maxBuy = await contract.getMaxIcoBuy();
+    console.log(`Min Buy (ETH): ${minBuy.toString()}`);
+    console.log(`Max Buy (ETH): ${maxBuy.toString()}`);
+  
+    if (ethAmount.lt(minBuy)) {
+      throw new Error('ETH amount is below the minimum buy limit.');
+    }
+    if (ethAmount.gt(maxBuy)) {
+      throw new Error('ETH amount exceeds the maximum buy limit.');
+    }
+  
+    let gasLimit;
     try {
-      const tx = await contract.buyTokens(tokenAmount, {
+      gasLimit = await contract.estimateGas.buyTokens(tokenAmount, {
         value: ethAmount
       });
-
+      gasLimit = gasLimit.add(ethers.BigNumber.from('100000'));
+      console.log(`Estimated Gas Limit: ${gasLimit.toString()}`);
+    } catch (error) {
+      console.error("Gas estimation failed:", error);
+      gasLimit = ethers.BigNumber.from('500000');
+    }
+  
+    try {
+      const tx = await contract.buyTokens(tokenAmount, {
+        value: ethAmount,
+        gasLimit: gasLimit
+      });
+  
       await tx.wait();
       console.log("Tokens purchased successfully!");
     } catch (error) {
       console.error("Error during token purchase:", error);
+      if (error.data && error.data.message) {
+        console.error("Revert reason:", error.data.message);
+      }
       throw new Error("Failed to purchase tokens.");
     }
   }, [account, library, icoData.tokenPrice]);
@@ -177,25 +207,25 @@ function App() {
   const { icoData, isLoading, buyTokens } = useIcoData();
   const [amount, setAmount] = useState(0.0);
   const [minBuy, setMinBuy] = useState('1 $PROS');
+  const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
   const [maxBuy, setMaxBuy] = useState('20m $PROS');
-  const [walletInfo, setWalletInfo] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
+  
   useEffect(() => {
     const fetchBuyLimits = async () => {
       try {
         const contract = new ethers.Contract(presaleContractAddress, ParbAbi, provider);
         const minBuy = await contract.getMinIcoBuy();
         const maxBuy = await contract.getMaxIcoBuy();
-
+  
         setMinBuy(ethers.utils.formatUnits(minBuy, 18));
         setMaxBuy(ethers.utils.formatUnits(maxBuy, 18));
       } catch (error) {
         console.error('Error fetching buy limits:', error);
       }
     };
-
+  
     fetchBuyLimits();
   }, []);
 
@@ -206,6 +236,7 @@ function App() {
   const handleError = (message) => {
     setErrorMessage(message);
     setOpenSnackbar(true);
+    console.log(`Error: ${message}`);
   };
 
   const handleWalletConnect = (account) => {
