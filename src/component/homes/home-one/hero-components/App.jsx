@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, forwardRef } from "react";
-import '@/styles/dapp-styles.css'
 import { Snackbar, LinearProgress, Box, Typography } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import { useEtherBalance, useEthers } from '@usedapp/core';
@@ -306,81 +305,86 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* <Header onWalletConnect={handleWalletConnect} /> */}
+    <div className="d-flex flex-column min-vh-100">
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert onClose={() => setOpenSnackbar(false)} severity="error" sx={{ width: '100%', fontSize: '1.25rem' }}>
           {errorMessage}
         </Alert>
       </Snackbar>
-      <main className="flex-grow w-full flex justify-center items-center px-4 py-5 sm:px-20 md:pt-20 md:pb-10 md:mt-28 md:mb-28">
-        <div className="flex overflow-hidden relative flex-col self-center px-4 py-5 sm:px-20 md:pt-20 md:pb-10 md:mt-28 md:mb-28 w-full sm:max-w-[56vw] shadow-2xl fill-black border-2 border-pros-green rounded-3xl shadow-green-500/50 shadow-[0_0_150px_15px_rgba(0,255,0,0.5)]">
-          <div className="relative self-center mt-14 text-2xl font-semibold leading-10 text-center text-pros-green uppercase max-md:mt-10 max-md:max-w-full">
-            {icoData.isActive ? "PRESALE ACTIVE NOW!" : "PRESALE NOT ACTIVE"}
-          </div>
-
-          {/* Current Tier */}
-          <div className="mt-10">
-            <div className="text-2xl font-semibold text-center text-pros-green">{icoData.currentTier}</div>
-          </div>
-
-          <div className="md:mt-7 w-full">
-            <ProgressBar current={icoData.tokensSold} goal={icoData.totalSupply} />
-          </div>
-
-          {/* Dual Subsection */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10 mb-20 items-center">
-            <div className="bg-black p-4 shadow-md rounded-lg border border-pros-green flex flex-col justify-center h-full rounded-xl shadow-green-500/50 shadow-[0_0_15px_5px_rgba(0,255,0,0.5)]">
-              <h2 className="text-3xl font-semibold text-pros-green text-center">Token Information</h2>
-              <div className="mt-4 space-y-2">
-                <div className="flex justify-between text-xl">
-                  <span>Status:</span>
-                  <span>{icoData.isActive ? "Active" : "Inactive"}</span>
+      <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center px-3 py-4 py-md-5">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-12 col-sm-10 col-md-8 col-lg-6">
+              <div className="dapp-container hero-countdown-wrap bg-black border border-pros-green rounded-3 shadow p-4 p-md-5">
+                <div className="text-center mt-4 mb-4">
+                  <h2 className="text-pros-green text-uppercase fw-semibold">
+                    {icoData.isActive ? "PRESALE ACTIVE NOW!" : "PRESALE NOT ACTIVE"}
+                  </h2>
                 </div>
-                <div className="flex justify-between text-xl">
-                  <span>Price (USD):</span>
-                  <span>{`$${icoData.tokenPrice}`}</span>
+
+                <div className="mt-4 mb-4">
+                  <h3 className="text-pros-green text-center fw-semibold">{icoData.currentTier}</h3>
                 </div>
-                <div className="flex justify-between text-xl">
-                  <span>Min Buy (USD):</span>
-                  <span>$150</span>
+
+                <div className="w-100 mt-4 mb-4">
+                  <ProgressBar current={icoData.tokensSold} goal={icoData.totalSupply} />
                 </div>
-                <div className="flex justify-between text-xl">
-                  <span>Max Buy (USD):</span>
-                  <span>$500,000</span>
+
+                <div className="row g-4 mt-4 mb-5">
+                  <div className="col-md-6">
+                    <div className="bg-black p-4 rounded border border-pros-green h-100">
+                      <h3 className="text-pros-green text-center fw-semibold mb-4">Token Information</h3>
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Status:</span>
+                        <span>{icoData.isActive ? "Active" : "Inactive"}</span>
+                      </div>
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Price (USD):</span>
+                        <span>{`$${icoData.tokenPrice}`}</span>
+                      </div>
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Min Buy (USD):</span>
+                        <span>$150</span>
+                      </div>
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Max Buy (USD):</span>
+                        <span>$500,000</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="bg-black p-4 rounded border border-pros-green h-100">
+                      <h3 className="text-pros-green text-center fw-semibold mb-4">Buy Tokens</h3>
+                      <div className="mb-3">
+                        <label className="form-label text-white">Amount (USD)</label>
+                        <input
+                          type="text"
+                          value={amountUsd}
+                          onChange={handleAmountChange}
+                          className="form-control form-control-lg"
+                        />
+                      </div>
+                      <button
+                        onClick={handleMaxAmount}
+                        className="btn btn-pros-green w-100 mb-3"
+                      >
+                        Max Amount
+                      </button>
+                      <button
+                        onClick={handleBuy}
+                        className="btn btn-pros-green w-100"
+                        disabled={!icoData.isActive}
+                      >
+                        Buy Tokens
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-black p-10 shadow-md rounded-lg border border-pros-green flex flex-col justify-center h-full rounded-xl shadow-green-500/50 shadow-[0_0_15px_5px_rgba(0,255,0,0.5)]">
-              <h2 className="text-3xl font-semibold text-pros-green text-center">Buy Tokens</h2>
-              <div className="mt-4">
-                <label className="block text-xl font-medium text-white-700">Amount (USD)</label>
-                <input
-                  type="text"
-                  value={amountUsd}
-                  onChange={handleAmountChange}
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 h-12 focus:border-indigo-500 sm:text-xl text-2xl"
-                />
-                <button
-                  onClick={handleMaxAmount}
-                  className="mt-2 px-4 py-2 bg-pros-green text-black rounded-md text-xl"
-                >
-                  Max Amount
-                </button>
-              </div>
-              <button
-                onClick={handleBuy}
-                className="mt-4 px-4 py-2 bg-pros-green text-black rounded-md text-xl"
-                disabled={!icoData.isActive}
-              >
-                Buy Tokens
-              </button>
             </div>
           </div>
         </div>
       </main>
-      {/* <Footer /> */}
     </div>
   );
 }

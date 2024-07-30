@@ -5,7 +5,7 @@ import { DAppProvider, Chain } from '@usedapp/core'
 import { getDefaultProvider } from 'ethers'
 import App from "./hero-components/App" // Import your dApp's main component
 import hero_thumb from "@/assets/img/update/hero/hero-1-1.png"
-import '@/styles/dapp-styles.css' // Import the dApp styles
+
 
 const Hero = () => {
    const arbitrumChainId = 42161;
