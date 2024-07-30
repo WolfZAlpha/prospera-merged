@@ -1,6 +1,7 @@
 import React from "react";
 import buybutton from "./../assets/images/buy-button.svg";
 import countdownBox from "./../assets/images/countdown-bg.png";
+import Image from 'next/image';
 
 const DualSubSection = ({ status, statusType, minBuy, maxBuy, amount, isMaxAmount, handleAmountChange, handleMaxAmount, handleBuy }) => {
   return (
@@ -72,7 +73,7 @@ const DualSubSection = ({ status, statusType, minBuy, maxBuy, amount, isMaxAmoun
       <p className="text-center mt-4">Price per PARB = .0000000058 ETH</p>
       <div className="mt-4 w-auto">
         <button className="bg-transparent w-full flex justify-center items-center" onClick={handleBuy}>
-          <img src={buybutton} alt="buy" style={{ maxHeight: "60px" }} />
+          <Image src={buybutton} alt="buy" style={{ maxHeight: "60px" }} />
         </button>
       </div>
     </div>

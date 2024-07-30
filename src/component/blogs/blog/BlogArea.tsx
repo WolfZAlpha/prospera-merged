@@ -3,7 +3,6 @@ import blog_data from "@/data/BlogData"
 import Image from "next/image"
 import Link from "next/link"
 import BlogSidebar from "../blog-common/BlogSidebar"
-import ReactPaginate from "react-paginate"
 import { useState } from "react"
 
 const BlogArea = () => {
@@ -16,7 +15,6 @@ const BlogArea = () => {
    const [itemOffset, setItemOffset] = useState(0);
    const endOffset = itemOffset + itemsPerPage;
    const currentItems = blogs.slice(itemOffset, endOffset);
-   const pageCount = Math.ceil(blogs.length / itemsPerPage);
 
    // click to request another page.
    const handlePageClick = (pageNumber: number) => {
