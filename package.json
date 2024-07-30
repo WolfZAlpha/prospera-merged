@@ -93,5 +93,8 @@
   },
   "prettier": {
     "printWidth": 160
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }
