@@ -1,3 +1,5 @@
+"use client";
+
 import "../styles/index.css"
 
 const isDev = process.env.NODE_ENV === 'development'

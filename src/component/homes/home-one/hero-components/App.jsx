@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useCallback, forwardRef } from "react";
 import '@/styles/dapp-styles.css'
 import { Snackbar, LinearProgress, Box, Typography } from '@mui/material';
@@ -251,7 +253,7 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header onWalletConnect={handleWalletConnect} />
+      {/* <Header onWalletConnect={handleWalletConnect} /> */}
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert onClose={() => setOpenSnackbar(false)} severity="error" sx={{ width: '100%', fontSize: '1.25rem' }}>
           {errorMessage}
@@ -323,7 +325,7 @@ function App() {
           </div>
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

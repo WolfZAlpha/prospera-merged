@@ -1,3 +1,5 @@
+"use client";
+
 // ButtonCard.js
 import React, { useState } from 'react';
 
