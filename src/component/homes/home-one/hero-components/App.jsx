@@ -14,7 +14,6 @@ const provider = new ethers.providers.JsonRpcProvider('https://arbitrum-one-rpc.
 const presaleContractAddress = "0x1806CD54631309778dE011A3ceeE6F88CA9c8DAf";
 
 // Custom hook to fetch ICO data and provide buy functionality
-// useIcoData Hook
 const useIcoData = () => {
   const { account, library } = useEthers();
   const [icoData, setIcoData] = useState({
@@ -25,20 +24,18 @@ const useIcoData = () => {
     tokenPrice: 0,
     minBuy: 0,
     maxBuy: 0,
+    ethUsdPrice: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!account) {
-      setIsLoading(false);
-      return;
-    }
-
-    const contract = new ethers.Contract(presaleContractAddress, ParbAbi, provider);
     const fetchIcoData = async () => {
       try {
+        const contract = new ethers.Contract(presaleContractAddress, ParbAbi, provider);
+        
         const icoState = await contract.getIcoState();
         const isActive = icoState._icoActive;
+        const currentTier = icoState._currentTier;
 
         const tier1TokensBN = await contract.TIER1_TOKENS();
         const tier2TokensBN = await contract.TIER2_TOKENS();
@@ -54,7 +51,6 @@ const useIcoData = () => {
         const tier2PriceUsd = parseFloat(tier2PriceUSDBN.toString()) / 100;
         const tier3PriceUsd = parseFloat(tier3PriceUSDBN.toString()) / 100;
 
-        const currentTier = icoState._currentTier;
         let tokensSold, totalSupply, tokenPrice;
 
         if (currentTier === 0) {
@@ -72,10 +68,14 @@ const useIcoData = () => {
         }
 
         const tierLabels = ["Tier 1", "Tier 2", "Tier 3"];
-        const tierLabel = tierLabels[currentTier] || "Inactive";
+        const tierLabel = isActive ? tierLabels[currentTier] : "Inactive";
 
         const minBuyUsd = 150;
         const maxBuyUsd = 500000;
+
+        // Calculate min and max buy in ETH
+        const minBuyEth = minBuyUsd / ethUsdPrice;
+        const maxBuyEth = maxBuyUsd / ethUsdPrice;
 
         setIcoData({
           isActive,
@@ -83,8 +83,9 @@ const useIcoData = () => {
           tokensSold: parseInt(tokensSold),
           totalSupply: parseInt(totalSupply),
           tokenPrice: parseFloat(tokenPrice).toFixed(2),
-          minBuy: minBuyUsd,
-          maxBuy: maxBuyUsd,
+          minBuy: minBuyEth.toFixed(6),
+          maxBuy: maxBuyEth.toFixed(6),
+          ethUsdPrice: ethUsdPrice,
         });
       } catch (error) {
         console.error('Error fetching ICO data:', error);
@@ -96,7 +97,7 @@ const useIcoData = () => {
     fetchIcoData();
   }, [account]);
 
-  const buyTokens = useCallback(async (tokenAmount) => {
+  const buyTokens = useCallback(async (tokenAmount, ethAmount) => {
     if (!account || !library) {
       throw new Error('Please connect your wallet to purchase tokens.');
     }
@@ -104,28 +105,34 @@ const useIcoData = () => {
     const signer = library.getSigner();
     const contract = new ethers.Contract(presaleContractAddress, ParbAbi, signer);
   
-    const tokenPrice = await contract.getCurrentTierPriceETH();
-    const ethAmount = ethers.BigNumber.from(tokenAmount).mul(tokenPrice).div(ethers.constants.WeiPerEther);
+    const tokenAmountBN = ethers.BigNumber.from(tokenAmount);
+    const ethAmountBN = ethers.utils.parseEther(ethAmount);
   
     const minBuy = await contract.getMinIcoBuy();
     const maxBuy = await contract.getMaxIcoBuy();
     console.log(`Min Buy (ETH): ${ethers.utils.formatEther(minBuy)} ETH`);
     console.log(`Max Buy (ETH): ${ethers.utils.formatEther(maxBuy)} ETH`);
+    console.log(`Attempting to buy: ${tokenAmount} tokens for ${ethAmount} ETH`);
   
-    if (ethAmount.lt(minBuy)) {
-      throw new Error('ETH amount is below the minimum buy limit.');
+    // Temporary fix: use hardcoded USD limits instead of contract-reported ETH limits
+    const minBuyUsd = 150;
+    const maxBuyUsd = 500000;
+    const ethUsdPrice = icoData.ethUsdPrice;
+    const ethAmountUsd = parseFloat(ethAmount) * ethUsdPrice;
+  
+    if (ethAmountUsd < minBuyUsd) {
+      throw new Error(`USD amount ($${ethAmountUsd.toFixed(2)}) is below the minimum buy limit ($${minBuyUsd}).`);
     }
-    if (ethAmount.gt(maxBuy)) {
-      throw new Error('ETH amount exceeds the maximum buy limit.');
+    if (ethAmountUsd > maxBuyUsd) {
+      throw new Error(`USD amount ($${ethAmountUsd.toFixed(2)}) exceeds the maximum buy limit ($${maxBuyUsd}).`);
     }
   
-    // Set gas limit to 30 million (Arbitrum's maximum)
     const gasLimit = ethers.BigNumber.from('30000000');
     console.log(`Gas Limit set to: ${gasLimit.toString()}`);
   
     try {
-      const tx = await contract.buyTokens(tokenAmount, {
-        value: ethAmount,
+      const tx = await contract.buyTokens(tokenAmountBN, {
+        value: ethAmountBN,
         gasLimit: gasLimit
       });
   
@@ -136,9 +143,9 @@ const useIcoData = () => {
       if (error.data && error.data.message) {
         console.error("Revert reason:", error.data.message);
       }
-      throw new Error("Failed to purchase tokens.");
+      throw new Error(error.data?.message || "Failed to purchase tokens.");
     }
-  }, [account, library, icoData.tokenPrice]);
+  }, [account, library, icoData.ethUsdPrice]);
 
   return { icoData, isLoading, buyTokens };
 };
@@ -196,30 +203,11 @@ const ProgressBar = ({ current, goal }) => {
 function App() {
   const { account } = useEthers();
   const { icoData, isLoading, buyTokens } = useIcoData();
-  const [amount, setAmount] = useState(0.0);
-  const [minBuy, setMinBuy] = useState('1 $PROS');
+  const [amountUsd, setAmountUsd] = useState('0');
   const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
-  const [maxBuy, setMaxBuy] = useState('20m $PROS');
   const [errorMessage, setErrorMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   
-  useEffect(() => {
-    const fetchBuyLimits = async () => {
-      try {
-        const contract = new ethers.Contract(presaleContractAddress, ParbAbi, provider);
-        const minBuy = await contract.getMinIcoBuy();
-        const maxBuy = await contract.getMaxIcoBuy();
-  
-        setMinBuy(ethers.utils.formatUnits(minBuy, 18));
-        setMaxBuy(ethers.utils.formatUnits(maxBuy, 18));
-      } catch (error) {
-        console.error('Error fetching buy limits:', error);
-      }
-    };
-  
-    fetchBuyLimits();
-  }, []);
-
   const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -231,7 +219,6 @@ function App() {
   };
 
   const handleWalletConnect = (account) => {
-    setWalletInfo(account);
     console.log("Wallet Info: ", account);
   };
 
@@ -240,7 +227,7 @@ function App() {
     const reg = /^\d*\.?\d*$/;
 
     if (reg.test(value)) {
-      setAmount(value);
+      setAmountUsd(value);
     }
   };
 
@@ -250,24 +237,69 @@ function App() {
       return;
     }
 
-    try {
-      const maxTokens = Math.floor(parseFloat(icoData.maxBuy) / parseFloat(icoData.tokenPrice)); // Convert USD max buy to token quantity and ensure it's a whole number
-      setAmount(maxTokens.toString()); // Set amount as a whole number string
-    } catch (error) {
-      console.error("Error setting max amount:", error);
-      handleError("Failed to set max amount.");
-    }
+    setAmountUsd('500000'); // Set to max buy amount in USD
   };
 
   const handleBuy = async () => {
+    if (!icoData.isActive) {
+      handleError("ICO is not active.");
+      return;
+    }
+  
     try {
-      await buyTokens(amount);
+      const usdAmount = parseFloat(amountUsd);
+  
+      // Check if the amount is within limits
+      if (usdAmount < 150) {
+        throw new Error('Amount is below the minimum buy limit of $150.');
+      }
+      if (usdAmount > 500000) {
+        throw new Error('Amount exceeds the maximum buy limit of $500,000.');
+      }
+  
+      // Convert USD amount to tokens
+      const tokenAmount = Math.floor(usdAmount / parseFloat(icoData.tokenPrice)).toString();
+      
+      // Convert USD amount to ETH
+      const ethAmount = (usdAmount / icoData.ethUsdPrice).toFixed(18);
+      
+      console.log(`Buying ${tokenAmount} tokens for $${usdAmount} (${ethAmount} ETH)`);
+      
+      // Call buyTokens with both token amount and ETH amount
+      await buyTokens(tokenAmount, ethAmount);
       console.log("Tokens purchased successfully!");
     } catch (error) {
       console.error("Error during handleBuy:", error);
-      handleError("Failed to initiate token purchase.");
+      handleError(error.message || "Failed to initiate token purchase.");
     }
   };
+
+  useEffect(() => {
+    if (!account) return;
+
+    const contract = new ethers.Contract(presaleContractAddress, ParbAbi, provider);
+    
+    const tokensPurchasedFilter = contract.filters.TokensPurchased(account);
+    const icoTierChangedFilter = contract.filters.IcoTierChanged();
+    
+    const handleTokensPurchased = (buyer, amount, price) => {
+      console.log(`Tokens Purchased: ${amount} tokens for ${ethers.utils.formatEther(price)} ETH`);
+      // You might want to refresh ICO data or update UI here
+    };
+
+    const handleIcoTierChanged = (newTier) => {
+      console.log(`ICO Tier Changed to: ${newTier}`);
+      // You might want to refresh ICO data or update UI here
+    };
+
+    contract.on(tokensPurchasedFilter, handleTokensPurchased);
+    contract.on(icoTierChangedFilter, handleIcoTierChanged);
+
+    return () => {
+      contract.off(tokensPurchasedFilter, handleTokensPurchased);
+      contract.off(icoTierChangedFilter, handleIcoTierChanged);
+    };
+  }, [account]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -284,7 +316,7 @@ function App() {
       <main className="flex-grow w-full flex justify-center items-center px-4 py-5 sm:px-20 md:pt-20 md:pb-10 md:mt-28 md:mb-28">
         <div className="flex overflow-hidden relative flex-col self-center px-4 py-5 sm:px-20 md:pt-20 md:pb-10 md:mt-28 md:mb-28 w-full sm:max-w-[56vw] shadow-2xl fill-black border-2 border-pros-green rounded-3xl shadow-green-500/50 shadow-[0_0_150px_15px_rgba(0,255,0,0.5)]">
           <div className="relative self-center mt-14 text-2xl font-semibold leading-10 text-center text-pros-green uppercase max-md:mt-10 max-md:max-w-full">
-            PRESALE ACTIVE NOW!
+            {icoData.isActive ? "PRESALE ACTIVE NOW!" : "PRESALE NOT ACTIVE"}
           </div>
 
           {/* Current Tier */}
@@ -306,16 +338,16 @@ function App() {
                   <span>{icoData.isActive ? "Active" : "Inactive"}</span>
                 </div>
                 <div className="flex justify-between text-xl">
-                  <span>Price (USD/ETH):</span>
+                  <span>Price (USD):</span>
                   <span>{`$${icoData.tokenPrice}`}</span>
                 </div>
                 <div className="flex justify-between text-xl">
-                  <span>Min Buy (USD/ETH):</span>
-                  <span>{`$${icoData.minBuy}`}</span>
+                  <span>Min Buy (USD):</span>
+                  <span>$150</span>
                 </div>
                 <div className="flex justify-between text-xl">
-                  <span>Max Buy (USD/ETH):</span>
-                  <span>{`$${icoData.maxBuy}`}</span>
+                  <span>Max Buy (USD):</span>
+                  <span>$500,000</span>
                 </div>
               </div>
             </div>
@@ -323,10 +355,10 @@ function App() {
             <div className="bg-black p-10 shadow-md rounded-lg border border-pros-green flex flex-col justify-center h-full rounded-xl shadow-green-500/50 shadow-[0_0_15px_5px_rgba(0,255,0,0.5)]">
               <h2 className="text-3xl font-semibold text-pros-green text-center">Buy Tokens</h2>
               <div className="mt-4">
-                <label className="block text-xl font-medium text-white-700">Amount</label>
+                <label className="block text-xl font-medium text-white-700">Amount (USD)</label>
                 <input
                   type="text"
-                  value={amount}
+                  value={amountUsd}
                   onChange={handleAmountChange}
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 h-12 focus:border-indigo-500 sm:text-xl text-2xl"
                 />
@@ -340,6 +372,7 @@ function App() {
               <button
                 onClick={handleBuy}
                 className="mt-4 px-4 py-2 bg-pros-green text-black rounded-md text-xl"
+                disabled={!icoData.isActive}
               >
                 Buy Tokens
               </button>
