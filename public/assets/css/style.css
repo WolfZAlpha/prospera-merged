@@ -3589,7 +3589,7 @@ label {
 .hero-style1 {
     position: relative;
     z-index: 6;
-    padding: 220px 0 0px;
+    padding: 220px 0 30px;
 }
 .hero-style1 .btn-wrap {
     margin-top: 43px;
@@ -3618,9 +3618,7 @@ label {
     }
 }
 .hero-countdown-wrap {
-    border-radius: 16px;
     text-align: center;
-    padding: 80px 90px;
 }
 .hero-countdown-wrap .banner-countdown-wrap {
     margin-top: 70px;
