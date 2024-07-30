@@ -104,14 +104,13 @@ const useIcoData = () => {
     const signer = library.getSigner();
     const contract = new ethers.Contract(presaleContractAddress, ParbAbi, signer);
   
-    const tokenPrice = ethers.utils.parseUnits(icoData.tokenPrice.toString(), "ether");
+    const tokenPrice = await contract.getCurrentTierPriceETH();
     const ethAmount = ethers.BigNumber.from(tokenAmount).mul(tokenPrice).div(ethers.constants.WeiPerEther);
   
-    // Ensure ETH amount is within the allowed limits
     const minBuy = await contract.getMinIcoBuy();
     const maxBuy = await contract.getMaxIcoBuy();
-    console.log(`Min Buy (ETH): ${minBuy.toString()}`);
-    console.log(`Max Buy (ETH): ${maxBuy.toString()}`);
+    console.log(`Min Buy (ETH): ${ethers.utils.formatEther(minBuy)} ETH`);
+    console.log(`Max Buy (ETH): ${ethers.utils.formatEther(maxBuy)} ETH`);
   
     if (ethAmount.lt(minBuy)) {
       throw new Error('ETH amount is below the minimum buy limit.');
@@ -120,17 +119,9 @@ const useIcoData = () => {
       throw new Error('ETH amount exceeds the maximum buy limit.');
     }
   
-    let gasLimit;
-    try {
-      gasLimit = await contract.estimateGas.buyTokens(tokenAmount, {
-        value: ethAmount
-      });
-      gasLimit = gasLimit.add(ethers.BigNumber.from('100000'));
-      console.log(`Estimated Gas Limit: ${gasLimit.toString()}`);
-    } catch (error) {
-      console.error("Gas estimation failed:", error);
-      gasLimit = ethers.BigNumber.from('500000');
-    }
+    // Set gas limit to 30 million (Arbitrum's maximum)
+    const gasLimit = ethers.BigNumber.from('30000000');
+    console.log(`Gas Limit set to: ${gasLimit.toString()}`);
   
     try {
       const tx = await contract.buyTokens(tokenAmount, {
