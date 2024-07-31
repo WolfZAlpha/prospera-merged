@@ -37,7 +37,7 @@ const ContactForm = () => {
 
    const form = useRef<HTMLFormElement>(null);
 
-   const sendEmail = (data: FormData) => {
+   const sendEmail = () => {
       if (form.current) {
          emailjs.sendForm('themegenix', 'template_hdr7ic6', form.current, 'QOBCxT0bzNKEs-CwW')
             .then((result) => {
