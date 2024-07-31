@@ -21,7 +21,7 @@ const schema = yup
 const DocumentForm = () => {
 
    const { register, handleSubmit, reset, formState: { errors }, } = useForm<FormData>({ resolver: yupResolver(schema), });
-   const onSubmit = (data: FormData) => {
+   const onSubmit = () => {
       const notify = () => toast('Message sent successfully', { position: 'top-center' });
       notify();
       reset();

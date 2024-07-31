@@ -24,7 +24,7 @@ const schema = yup
 const BlogForm = () => {
 
    const { register, handleSubmit, reset, formState: { errors }, } = useForm<FormData>({ resolver: yupResolver(schema), });
-   const onSubmit = (data: FormData) => {
+   const onSubmit = () => {
       const notify = () => toast('Comment sent successfully', { position: 'top-center' });
       notify();
       reset();
