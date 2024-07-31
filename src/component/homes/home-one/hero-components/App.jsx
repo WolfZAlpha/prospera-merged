@@ -31,7 +31,7 @@ const useIcoData = () => {
     const fetchIcoData = async () => {
       try {
         const contract = new ethers.Contract(presaleContractAddress, ParbAbi, provider);
-        
+
         const icoState = await contract.getIcoState();
         const isActive = icoState._icoActive;
         const currentTier = icoState._currentTier;
@@ -100,41 +100,41 @@ const useIcoData = () => {
     if (!account || !library) {
       throw new Error('Please connect your wallet to purchase tokens.');
     }
-  
+
     const signer = library.getSigner();
     const contract = new ethers.Contract(presaleContractAddress, ParbAbi, signer);
-  
+
     const tokenAmountBN = ethers.BigNumber.from(tokenAmount);
     const ethAmountBN = ethers.utils.parseEther(ethAmount);
-  
+
     const minBuy = await contract.getMinIcoBuy();
     const maxBuy = await contract.getMaxIcoBuy();
     console.log(`Min Buy (ETH): ${ethers.utils.formatEther(minBuy)} ETH`);
     console.log(`Max Buy (ETH): ${ethers.utils.formatEther(maxBuy)} ETH`);
     console.log(`Attempting to buy: ${tokenAmount} tokens for ${ethAmount} ETH`);
-  
+
     // Temporary fix: use hardcoded USD limits instead of contract-reported ETH limits
     const minBuyUsd = 150;
     const maxBuyUsd = 500000;
     const ethUsdPrice = icoData.ethUsdPrice;
     const ethAmountUsd = parseFloat(ethAmount) * ethUsdPrice;
-  
+
     if (ethAmountUsd < minBuyUsd) {
       throw new Error(`USD amount ($${ethAmountUsd.toFixed(2)}) is below the minimum buy limit ($${minBuyUsd}).`);
     }
     if (ethAmountUsd > maxBuyUsd) {
       throw new Error(`USD amount ($${ethAmountUsd.toFixed(2)}) exceeds the maximum buy limit ($${maxBuyUsd}).`);
     }
-  
+
     const gasLimit = ethers.BigNumber.from('30000000');
     console.log(`Gas Limit set to: ${gasLimit.toString()}`);
-  
+
     try {
       const tx = await contract.buyTokens(tokenAmountBN, {
         value: ethAmountBN,
         gasLimit: gasLimit
       });
-  
+
       await tx.wait();
       console.log("Tokens purchased successfully!");
     } catch (error) {
@@ -206,7 +206,7 @@ function App() {
   const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
   const [errorMessage, setErrorMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  
+
   const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -244,10 +244,10 @@ function App() {
       handleError("ICO is not active.");
       return;
     }
-  
+
     try {
       const usdAmount = parseFloat(amountUsd);
-  
+
       // Check if the amount is within limits
       if (usdAmount < 150) {
         throw new Error('Amount is below the minimum buy limit of $150.');
@@ -255,15 +255,15 @@ function App() {
       if (usdAmount > 500000) {
         throw new Error('Amount exceeds the maximum buy limit of $500,000.');
       }
-  
+
       // Convert USD amount to tokens
       const tokenAmount = Math.floor(usdAmount / parseFloat(icoData.tokenPrice)).toString();
-      
+
       // Convert USD amount to ETH
       const ethAmount = (usdAmount / icoData.ethUsdPrice).toFixed(18);
-      
+
       console.log(`Buying ${tokenAmount} tokens for $${usdAmount} (${ethAmount} ETH)`);
-      
+
       // Call buyTokens with both token amount and ETH amount
       await buyTokens(tokenAmount, ethAmount);
       console.log("Tokens purchased successfully!");
@@ -277,10 +277,10 @@ function App() {
     if (!account) return;
 
     const contract = new ethers.Contract(presaleContractAddress, ParbAbi, provider);
-    
+
     const tokensPurchasedFilter = contract.filters.TokensPurchased(account);
     const icoTierChangedFilter = contract.filters.IcoTierChanged();
-    
+
     const handleTokensPurchased = (buyer, amount, price) => {
       console.log(`Tokens Purchased: ${amount} tokens for ${ethers.utils.formatEther(price)} ETH`);
       // You might want to refresh ICO data or update UI here
@@ -305,17 +305,16 @@ function App() {
   }
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="flex-column">
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert onClose={() => setOpenSnackbar(false)} severity="error" sx={{ width: '100%', fontSize: '1.25rem' }}>
           {errorMessage}
         </Alert>
       </Snackbar>
-      <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center px-3 py-4 py-md-5">
+      <main className="w-100 d-flex justify-content-center align-items-center ">
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-10 col-md-8 col-lg-6">
-              <div className="dapp-container hero-countdown-wrap bg-black border border-pros-green rounded-3 shadow p-4 p-md-5">
+            <div className="">
                 <div className="text-center mt-4 mb-4">
                   <h2 className="text-pros-green text-uppercase fw-semibold">
                     {icoData.isActive ? "PRESALE ACTIVE NOW!" : "PRESALE NOT ACTIVE"}
@@ -380,7 +379,6 @@ function App() {
                     </div>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
         </div>
