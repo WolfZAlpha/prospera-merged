@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UseSticky from "../../hooks/UseSticky";
 import Image from "next/image";
 import NavMenu from "./Menu/NavMenu";
 import Sidebar from "./Menu/Sidebar";
 import HeaderOffcanvas from "./Menu/HeaderOffcanvas";
 import useWalletConnection from '@/hooks/useWalletConnection'; // Adjust the path as needed
+import { useWalletContext } from '@/context/WalletContext'; // Adjust the path as necessary
 
 import logo_1 from "@/assets/img/logo/logo.png";
 
@@ -15,6 +16,7 @@ const HeaderThree = () => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [offCanvas, setOffCanvas] = useState<boolean>(false);
   const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
+  const { isWalletConnected } = useWalletContext();
 
   return (
     <>
@@ -34,7 +36,7 @@ const HeaderThree = () => {
                     <div className="header-action">
                       <ul className="list-wrap">
                         <li className="header-login">
-                          {walletInfo ? (
+                          {isWalletConnected ? (
                             <button className="connect-btn" onClick={disconnectWallet}>
                               Disconnect<i className="connect-btn-icon fas fa-wallet"></i>
                             </button>

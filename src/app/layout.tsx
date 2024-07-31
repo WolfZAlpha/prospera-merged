@@ -2,6 +2,7 @@
 
 import { DAppProvider, Config, Chain } from '@usedapp/core';
 import { getDefaultProvider } from 'ethers';
+import { WalletProvider } from '@/context/WalletContext'; // Adjust the path as necessary
 import "../styles/index.css";
 
 const arbitrumChainId = 42161; // Arbitrum One chain ID in decimal
@@ -39,7 +40,9 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning={true}>
         <DAppProvider config={config}>
-          {children}
+          <WalletProvider>
+            {children}
+          </WalletProvider>
         </DAppProvider>
       </body>
     </html>

@@ -5,7 +5,8 @@ import { Snackbar, LinearProgress, Box, Typography } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import { useEtherBalance, useEthers } from '@usedapp/core';
 import { ethers } from 'ethers';
-import useWalletConnection from '@/hooks/useWalletConnection';
+import { useWalletContext } from '@/context/WalletContext'; // Adjust the path as necessary
+import useWalletConnection from '@/hooks/useWalletConnection'; // Adjust the path as necessary
 import ParbAbi from "./pros_abi.json";
 
 // Provider and contract setup
@@ -203,13 +204,20 @@ function App() {
   const { account } = useEthers();
   const { icoData, isLoading, buyTokens } = useIcoData();
   const [amountUsd, setAmountUsd] = useState('0');
-  const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
   const [errorMessage, setErrorMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const { isWalletConnected } = useWalletContext();
+  const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();  
 
   const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
+
+  useEffect(() => {
+    if (isWalletConnected) {
+      console.log("Wallet connected");
+    }
+  }, [isWalletConnected]);
 
   const handleError = (message) => {
     setErrorMessage(message);
@@ -231,11 +239,11 @@ function App() {
   };
 
   const handleMaxAmount = () => {
-    if (!account) {
-      handleError("Please connect your wallet to fetch available amount.");
+    if (!isWalletConnected) {
+      handleError("Please connect your wallet to fetch the available amount.");
       return;
     }
-
+  
     setAmountUsd('500000'); // Set to max buy amount in USD
   };
 

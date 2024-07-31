@@ -1,41 +1,36 @@
 import { useState, useEffect } from 'react';
 import { useEthers } from '@usedapp/core';
+import { useWalletContext } from '@/context/WalletContext'; // Adjust the path as necessary
 
 interface WalletInfo {
-  account: string | null | undefined;
-  library: any;
-  chainId: number | null | undefined;
+  account: string | null;
+  library: any | null;
+  chainId: number | null;
 }
 
 const arbitrumChainId = 42161; // Arbitrum One chain ID in decimal
 
 const useWalletConnection = () => {
   const { activateBrowserWallet, deactivate, account, library, chainId, error } = useEthers();
-  const [walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
+  const { setIsWalletConnected } = useWalletContext();
+  const [walletInfo, setWalletInfo] = useState<WalletInfo>({ account: null, library: null, chainId: null });
 
   useEffect(() => {
-    if (account && library) {
-      if (chainId === arbitrumChainId) {
-        setWalletInfo({ account, library, chainId });
-        console.log("Wallet info updated:", { account, library, chainId });
-      } else {
-        console.error(`Unsupported chain id: ${chainId}. Please switch to Arbitrum One.`);
-        setWalletInfo(null);
-      }
+    if (account && library && chainId === arbitrumChainId) {
+      setWalletInfo({ account, library, chainId });
+      setIsWalletConnected(true);
+      console.log("Wallet info updated:", { account, library, chainId });
     } else {
-      setWalletInfo(null);
+      setWalletInfo({ account: null, library: null, chainId: null });
+      setIsWalletConnected(false);
     }
-  }, [account, library, chainId]);
+  }, [account, library, chainId, setIsWalletConnected]);
 
   const connectWallet = async () => {
     try {
       console.log("Connecting wallet...");
       await activateBrowserWallet();
-      if (account) {
-        console.log("Wallet connected successfully");
-      } else {
-        console.log("Wallet connection failed");
-      }
+      console.log("Wallet connected successfully");
     } catch (error) {
       console.error("Error connecting wallet:", error);
     }
@@ -43,7 +38,8 @@ const useWalletConnection = () => {
 
   const disconnectWallet = () => {
     deactivate();
-    setWalletInfo(null);
+    setWalletInfo({ account: null, library: null, chainId: null });
+    setIsWalletConnected(false);
     console.log("Wallet disconnected");
   };
 
