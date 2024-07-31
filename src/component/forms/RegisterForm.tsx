@@ -15,7 +15,7 @@ interface FormData {
    password: string;
 }
 
-const RegisterForm = ({ style }: any) => {
+const RegisterForm = ({ }: any) => {
 
    const schema = yup
       .object({
@@ -26,7 +26,7 @@ const RegisterForm = ({ style }: any) => {
       .required();
 
    const { register, handleSubmit, reset, formState: { errors }, } = useForm<FormData>({ resolver: yupResolver(schema), });
-   const onSubmit = (data: FormData) => {
+   const onSubmit = () => {
       const notify = () => toast('Registration successfully', { position: 'top-center' });
       notify();
       reset();
