@@ -35,12 +35,12 @@ const HeaderThree = () => {
                       <ul className="list-wrap">
                         <li className="header-login">
                           {walletInfo ? (
-                            <button onClick={disconnectWallet}>
-                              Disconnect<i className="ml-4 fas fa-wallet"></i>
+                            <button className="connect-btn" onClick={disconnectWallet}>
+                              Disconnect<i className="connect-btn-icon fas fa-wallet"></i>
                             </button>
                           ) : (
-                            <button onClick={connectWallet}>
-                              Connect Wallet<i className="ml-4 fas fa-wallet"></i>
+                            <button className="connect-btn" onClick={connectWallet}>
+                              Connect Wallet<i className="connect-btn-icon fas fa-wallet"></i>
                             </button>
                           )}
                         </li>

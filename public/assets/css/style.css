@@ -90,6 +90,12 @@ body {
 	font-style: normal;
   background-color: var(--tg-black);
 }
+
+main {
+  min-height: auto;
+  height: auto;
+}
+
 img,
 .img {
 	max-width: 100%;
@@ -372,6 +378,14 @@ label {
 }
 .breadcrumb > .active {
 	color: var(--tg-primary-color);
+}
+
+.connect-btn {
+  background-color: black;
+}
+
+.connect-btn-icon {
+  margin-left: 10px;
 }
 
 /* scrollUp */
@@ -6588,7 +6602,7 @@ label {
 .hero-countdown-wrap {
   border-radius: 1.5rem;
   text-align: center;
-  padding: 5rem;
+  padding: 2rem;  
   font-size: 1rem;
   line-height: 1.5;
   border: 2px solid #01ff02;
