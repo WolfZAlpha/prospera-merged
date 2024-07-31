@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import UseSticky from "../../hooks/UseSticky";
 import Image from "next/image";
 import NavMenu from "./Menu/NavMenu";
