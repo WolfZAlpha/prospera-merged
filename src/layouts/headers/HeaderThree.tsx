@@ -15,7 +15,7 @@ const HeaderThree = () => {
   const { sticky } = UseSticky();
   const [isActive, setIsActive] = useState<boolean>(false);
   const [offCanvas, setOffCanvas] = useState<boolean>(false);
-  const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
+  const { connectWallet, disconnectWallet } = useWalletConnection();
   const { isWalletConnected } = useWalletContext();
 
   return (
