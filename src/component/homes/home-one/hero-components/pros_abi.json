@@ -1,5 +1,10 @@
 [
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -97,6 +102,17 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "contractName",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidContractAddress",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "InvalidIcoTier",
     "type": "error"
@@ -177,6 +193,11 @@
       }
     ],
     "name": "UUPSUnsupportedProxiableUUID",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UnauthorizedCaller",
     "type": "error"
   },
   {
@@ -843,6 +864,19 @@
       }
     ],
     "name": "setProsperaContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_prosperaContract",
+        "type": "address"
+      }
+    ],
+    "name": "setProsperaContractAndTransferTokens",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

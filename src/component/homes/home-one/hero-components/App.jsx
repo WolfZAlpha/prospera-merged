@@ -11,7 +11,7 @@ import ParbAbi from "./pros_abi.json";
 
 // Provider and contract setup
 const provider = new ethers.providers.JsonRpcProvider('https://arbitrum-one-rpc.publicnode.com');
-const presaleContractAddress = "0x1806CD54631309778dE011A3ceeE6F88CA9c8DAf";
+const presaleContractAddress = "0xe8F1dD7511f62A6ed7a54C0196CA23B5382d2e26";
 
 // Custom hook to fetch ICO data and provide buy functionality
 const useIcoData = () => {
