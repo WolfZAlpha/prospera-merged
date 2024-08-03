@@ -20,6 +20,7 @@ const HomeOne = () => {
       <RoadMap />
       <FaqArea />
       <Brand />
+      <br />
       <DocumentArea />
       < br />
       <FooterTwo />
