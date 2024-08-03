@@ -6,6 +6,7 @@ import IntroArea from "./IntroArea"
 import OtherCrypto from "./OtherCrypto"
 import RoadMap from "./RoadMap"
 import HeaderThree from "@/layouts/headers/HeaderThree"
+import DocumentArea from "../../common/DocumentArea"
 import FooterTwo from "@/layouts/footers/FooterTwo"
 
 const HomeOne = () => {
@@ -19,6 +20,7 @@ const HomeOne = () => {
       <RoadMap />
       <FaqArea />
       <Brand />
+      <DocumentArea />
       < br />
       <FooterTwo />
     </div>

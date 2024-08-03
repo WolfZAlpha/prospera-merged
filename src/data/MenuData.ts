@@ -42,7 +42,7 @@ const menu_data: MenuItem[] = [
         page:"nav_1",
         has_dropdown: false,
         title: "Contact",
-        link: "/contact",
+        link: "/#DocumentArea",
     },
     
     {

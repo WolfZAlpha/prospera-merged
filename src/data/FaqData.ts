@@ -16,7 +16,7 @@ const faq_data:DataType[]=[
       id:2,
       page:"home_1",
       title:"What is the value of Prospera tokens?",
-      desc: "Tier 1: $0.009 | Tier 2: $0.04 | Tier 3: $0.09 | Listing Price $0.15",
+      desc: "Tier 1: $0.02 | Tier 2: $0.08 | Tier 3: $0.16 | Listing Price $0.20",
    },
    {
       id:3,
