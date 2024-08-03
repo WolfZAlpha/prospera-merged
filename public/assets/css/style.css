@@ -1,7 +1,7 @@
 /*
-  Theme Name: IKO - ICO & Crypto Landing Page Template
-  Support: themegenix@gmail.com
-  Description: IKO - ICO & Crypto Landing Page Template.
+  Theme Name: PROSPERA
+  Support: security@prosperadefi.com
+  Description: PROSPERA – is a cutting-edge De-Fi company at the forefront of innovation in the Artificial Intelligence sector.
   Version: 1.0
 */
 
@@ -1684,7 +1684,7 @@ label {
     text-transform: uppercase;
 }
 .roadmap-content {
-    border: 1px solid #0080ff;
+    border: 1px solid #01ff02;
     background: var(--tg-black);
     border-radius: 15px;
     padding: 75px 50px 65px;
@@ -4028,7 +4028,7 @@ label {
     display: flex;
     padding: 40px;
     gap: 32px;
-    border: 1px solid #0080ff;
+    border: 1px solid #01ff02;
     /* Medium devices */
     /* Extra small devices */
   }
