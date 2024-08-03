@@ -244,10 +244,10 @@ function App() {
       handleError("ICO is not active.");
       return;
     }
-
+  
     try {
       const usdAmount = parseFloat(amountUsd);
-
+  
       // Check if the amount is within limits
       if (usdAmount < icoData.minBuy) {
         throw new Error(`Amount is below the minimum buy limit of $${icoData.minBuy}.`);
@@ -255,19 +255,17 @@ function App() {
       if (usdAmount > icoData.maxBuy) {
         throw new Error(`Amount exceeds the maximum buy limit of $${icoData.maxBuy}.`);
       }
-
-      // Calculate the amount after tax
-      const usdAmountAfterTax = usdAmount * 0.9; // 10% tax deduction
-
-      // Convert USD amount to tokens using the after-tax amount
-      const tokenAmount = Math.floor(usdAmountAfterTax / icoData.tokenPrice).toString();
-
+  
       // Convert USD amount to ETH
       const ethAmount = (usdAmount / icoData.ethUsdPrice).toFixed(18);
-
-      console.log(`Buying ${tokenAmount} tokens for $${usdAmount} (${ethAmount} ETH)`);
-
-      // Call buyTokens with both token amount and ETH amount
+  
+      // Calculate tokens to be received (based on 90% of the ETH amount after tax deduction)
+      const effectiveUsdAmount = usdAmount * 0.9; // 10% tax is deducted
+      const tokenAmount = Math.floor(effectiveUsdAmount / icoData.tokenPrice).toString();
+  
+      console.log(`Buying approximately ${tokenAmount} tokens for $${usdAmount} (${ethAmount} ETH)`);
+  
+      // Call buyTokens with token amount and ETH amount
       await buyTokens(tokenAmount, ethAmount);
       console.log("Tokens purchased successfully!");
       await fetchIcoData(); // Refresh ICO data after successful purchase
@@ -370,12 +368,12 @@ function App() {
                           onChange={handleAmountChange}
                           className="form-control form-control-lg"
                         />
-                        {parseFloat(amountUsd) > 0 && (
-                          <div className="mt-2 text-white">
-                            <p>Gross Tokens: {Math.floor(parseFloat(amountUsd) / icoData.tokenPrice)}</p>
-                            <p>Net Tokens (after 10% tax): {Math.floor((parseFloat(amountUsd) * 0.9) / icoData.tokenPrice)}</p>
-                          </div>
-                        )}
+                          {parseFloat(amountUsd) > 0 && (
+                            <div className="mt-2 text-white">
+                              <p>Approximate tokens to receive: {Math.floor((parseFloat(amountUsd) * 0.9) / icoData.tokenPrice)}</p>
+                              <p>ETH to send: {(parseFloat(amountUsd) / icoData.ethUsdPrice).toFixed(6)} ETH</p>
+                            </div>
+                          )}
                       </div>
                       <button
                         onClick={handleMaxAmount}
