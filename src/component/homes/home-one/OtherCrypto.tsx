@@ -1,6 +1,5 @@
 "use client"
 import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
 import Slider from "react-slick";
 
 import partnerThumb_1 from "@/assets/img/othercrypto/eth.svg"
