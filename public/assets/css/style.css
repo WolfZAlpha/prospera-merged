@@ -1973,7 +1973,7 @@ label {
 }
 .document-form-wrap {
     background: var(--tg-secondary-color);
-    border: 1px solid rgba(43 44 56 / 46%);
+    border: 1px solid ##01ff02;
     padding: 60px 50px 50px;
     text-align: center;
     border-radius: 15px;
@@ -1995,7 +1995,7 @@ label {
 .document-form-wrap .form-grp textarea,
 .document-form-wrap .form-grp input {
     width: 100%;
-    background: rgba(255 255 255 / 7%);
+    background: rgba(0, 0, 0, 0.07);
     border: none;
     border-radius: 30px;
     font-size: 16px;
