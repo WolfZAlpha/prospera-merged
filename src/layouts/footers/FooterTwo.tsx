@@ -45,9 +45,7 @@ const FooterTwo = () => {
                <div className="col-xl-auto col-lg-6 order-xl-2">
                   <div className="footer-widget widget-contact">
                      <h3 className="fw-title">CONTACT US</h3>
-                     <p className="contact-info-text">At The Bank, Withdrawling Bags, of $PROS Q-Div&apos;s, Prosper, USA</p>
-                     <div className="contact-info-link">Call Us: <Link href="tel:8002758777">77077372</Link></div>
-                     <div className="contact-info-link"><Link href="mailto:contact@prospera.io">contact@prospera.io</Link></div>
+                     <div className="contact-info-link"><Link href="mailto:contact@prospera.io">contact@prosperadefi.com</Link></div>
                      <p className="copyright-text">Copyright © 2024 <Link href="#">PROSPERA.</Link> All rights reserved.</p>
                   </div>
                </div>
