@@ -351,10 +351,6 @@ function App() {
                         <span>Max Buy (USD):</span>
                         <span>${icoData.maxBuy.toFixed(2)}</span>
                       </div>
-                      <div className="d-flex justify-content-between mb-2">
-                        <span>ICO Tax:</span>
-                        <span>10%</span>
-                      </div>
                     </div>
                   </div>
                   <div className="col-md-6">
