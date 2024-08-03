@@ -256,8 +256,11 @@ function App() {
         throw new Error(`Amount exceeds the maximum buy limit of $${icoData.maxBuy}.`);
       }
 
-      // Convert USD amount to tokens
-      const tokenAmount = Math.floor(usdAmount / icoData.tokenPrice).toString();
+      // Calculate the amount after tax
+      const usdAmountAfterTax = usdAmount * 0.9; // 10% tax deduction
+
+      // Convert USD amount to tokens using the after-tax amount
+      const tokenAmount = Math.floor(usdAmountAfterTax / icoData.tokenPrice).toString();
 
       // Convert USD amount to ETH
       const ethAmount = (usdAmount / icoData.ethUsdPrice).toFixed(18);
@@ -350,6 +353,10 @@ function App() {
                         <span>Max Buy (USD):</span>
                         <span>${icoData.maxBuy.toFixed(2)}</span>
                       </div>
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>ICO Tax:</span>
+                        <span>10%</span>
+                      </div>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -363,6 +370,12 @@ function App() {
                           onChange={handleAmountChange}
                           className="form-control form-control-lg"
                         />
+                        {parseFloat(amountUsd) > 0 && (
+                          <div className="mt-2 text-white">
+                            <p>Gross Tokens: {Math.floor(parseFloat(amountUsd) / icoData.tokenPrice)}</p>
+                            <p>Net Tokens (after 10% tax): {Math.floor((parseFloat(amountUsd) * 0.9) / icoData.tokenPrice)}</p>
+                          </div>
+                        )}
                       </div>
                       <button
                         onClick={handleMaxAmount}
