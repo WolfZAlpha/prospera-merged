@@ -31,7 +31,7 @@ const amount_data: DataType[] = [
       price: "$0.02",
       skill: "8%",
       value: "0.005",
-      value_2: "0.15",
+      value_2: "0.20",
    },
    {
       id: 2,
@@ -39,7 +39,7 @@ const amount_data: DataType[] = [
       price: "$0.08",
       skill: "30%",
       value: "0.005",
-      value_2: "0.35",
+      value_2: "0.20",
    },
    {
       id: 3,
@@ -47,15 +47,15 @@ const amount_data: DataType[] = [
       price: "$0.16",
       skill: "52%",
       value: "0.01",
-      value_2: "0.35",
+      value_2: "0.20",
    },
    {
       id: 3,
       title: "Listing $PROS Price",
-      price: "$0.35",
+      price: "$0.20",
       skill: "100%",
       value: "0.04",
-      value_2: "0.35",
+      value_2: "0.20",
    },
 ];
 

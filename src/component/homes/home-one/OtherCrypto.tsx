@@ -19,27 +19,27 @@ const partner_data: DataType[] = [
    {
       id: 1,
       icon: partnerThumb_1,
-      desc: (<>Send in $ETH</>),
+      desc: (<>ETH</>),
    },
    {
       id: 2,
       icon: partnerThumb_2,
-      desc: (<>Send in $AVAX</>),
+      desc: (<>AVAX</>),
    },
    {
       id: 3,
       icon: partnerThumb_3,
-      desc: (<>Send in $SOL</>),
+      desc: (<>SOL</>),
    },
    {
       id: 4,
       icon: partnerThumb_4,
-      desc: (<>Send in $BNB</>),
+      desc: (<>BNB</>),
    },
    {
       id: 5,
       icon: partnerThumb_5,
-      desc: (<>Send in $BASE</>),
+      desc: (<>BASE</>),
    },
 ];
 
@@ -99,7 +99,7 @@ const PartnerArea = () => {
       <div className="pt-130 bg-black2 pb-20">
          <div className="container">
             <div className="section-title text-center mb-50">
-               <h2 className="title style2">LayerZero Expansion ICO</h2>
+               <h2 className="title style2">OMNICHAIN EXPANSION COMING SOON</h2>
             </div>
             <div className="slider-area">
                <Slider {...settings} className="row partner-slider1">
@@ -109,8 +109,6 @@ const PartnerArea = () => {
                            <div className="partner-card-img">
                               <Image src={item.icon} alt="img" />
                            </div>
-                           <p className="partner-card-text">{item.desc}</p>
-                           <Link className="btn btn3" href="/blog">Send</Link>
                         </div>
                      </div>
                   ))}
