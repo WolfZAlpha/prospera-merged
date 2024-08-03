@@ -1973,7 +1973,7 @@ label {
 }
 .document-form-wrap {
     background: var(--tg-secondary-color);
-    border: 1px solid ##01ff02;
+    border: 1px solid #01ff02;
     padding: 60px 50px 50px;
     text-align: center;
     border-radius: 15px;
@@ -1995,11 +1995,11 @@ label {
 .document-form-wrap .form-grp textarea,
 .document-form-wrap .form-grp input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.07);
+    background: rgba(255, 255, 255);
     border: none;
     border-radius: 30px;
     font-size: 16px;
-    color: var(--tg-white);
+    color: var(--tg-secondary-color);
     padding: 15px 20px;
     line-height: 1;
     height: 50px;
@@ -2008,7 +2008,7 @@ label {
 .document-form-wrap .form-grp textarea::placeholder,
 .document-form-wrap .form-grp input::placeholder {
     font-size: 16px;
-    color: #AAABB2;
+    color: #000000;
     line-height: 1;
 }
 .document-form-wrap .form-grp textarea {
@@ -2024,7 +2024,7 @@ label {
 }
 .document-wrap {
     background: var(--tg-secondary-color);
-    border: 1px solid rgba(43 44 56 / 46%);
+    border: 1px solid #01ff02;
     padding: 60px 64px 50px;
     border-radius: 15px;
     text-align: center;
