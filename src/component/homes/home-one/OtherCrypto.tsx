@@ -98,7 +98,7 @@ const PartnerArea = () => {
       <div className="pt-130 bg-black2 pb-20">
          <div className="container">
             <div className="section-title text-center mb-50">
-               <h2 className="title style2">OMNICHAIN EXPANSION COMING SOON</h2>
+               <h2 className="title style2">Omnichain Expansion Coming Soon</h2>
             </div>
             <div className="slider-area">
                <Slider {...settings} className="row partner-slider1">
