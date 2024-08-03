@@ -1922,7 +1922,7 @@ label {
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    background: #1A1C2B;
+    background: #000000;
     border-radius: 50%;
     box-shadow: 0px 1px 4px 0px rgba(0, 20, 90, 0.10);
     font-size: 16px;
@@ -2058,7 +2058,7 @@ label {
 .document-wrap .list-wrap a .icon {
     width: 130px;
     height: 104px;
-    background: rgba(255 255 255 / 7%);
+    background: #000000;
     border-radius: 10px;
     display: flex;
     align-items: center;

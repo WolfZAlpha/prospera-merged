@@ -3,7 +3,7 @@ import Image, { StaticImageData } from "next/image"
 import Slider from "react-slick";
 
 import brandImg_1 from "@/assets/img/brand/arbitrum.svg"
-import brandImg_2 from "@/assets/img/brand/brand_img02.png"
+import brandImg_2 from "@/assets/img/brand/vialabs.svg"
 import brandImg_3 from "@/assets/img/brand/brand_img03.png"
 import brandImg_4 from "@/assets/img/brand/brand_img04.png"
 import brandImg_7 from "@/assets/img/brand/brand_img07.png"
@@ -60,7 +60,7 @@ const Brand = () => {
             <div className="row g-0">
                <div className="col-lg-12">
                   <div className="brand-title text-center">
-                     <h6 className="title">Our top Partner</h6>
+                     <h6 className="title">Partners</h6>
                   </div>
                </div>
             </div>
