@@ -37,13 +37,6 @@ const menu_data: MenuItem[] = [
         title: "RoadMap",
         link: "/#roadMap",
     },
-    {
-        id: 4,
-        page:"nav_1",
-        has_dropdown: false,
-        title: "Contact",
-        link: "/#documentarea",
-    },
     
     {
         id: 1,

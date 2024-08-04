@@ -10,7 +10,6 @@ import icon_3 from "@/assets/img/update/icon/feature-icon1-3.svg"
 interface DataType {
    id: number;
    title: string;
-   price: string;
    skill: string;
    value: string;
    value_2: string;
@@ -28,33 +27,29 @@ const amount_data: DataType[] = [
    {
       id: 1,
       title: "Tier 1 Pre-Sale $PROS Price",
-      price: "$0.02",
-      skill: "8%",
-      value: "0.005",
+      skill: "10%",
+      value: "0.02",
       value_2: "0.20",
    },
    {
       id: 2,
       title: "Tier 2 Pre-Sale $PROS Price",
-      price: "$0.08",
-      skill: "30%",
-      value: "0.005",
+      skill: "40%",
+      value: "0.08",
       value_2: "0.20",
    },
    {
       id: 3,
       title: "ICO $PROS Price",
-      price: "$0.16",
-      skill: "52%",
-      value: "0.01",
+      skill: "80%",
+      value: "0.16",
       value_2: "0.20",
    },
    {
       id: 3,
       title: "Listing $PROS Price",
-      price: "$0.20",
       skill: "100%",
-      value: "0.04",
+      value: "0.20",
       value_2: "0.20",
    },
 ];
@@ -117,7 +112,6 @@ const ChooseArea = () => {
                      {amount_data.map((item) => (
                         <li key={item.id}>
                            <h6 className="progress-wrap-title">{item.title}</h6>
-                           <p className="progress-wrap-text">{item.price}</p>
                            <div className="skill-feature">
                               <div className="progress">
                                  <div className="progress-bar" style={{ width: item.skill }}>
