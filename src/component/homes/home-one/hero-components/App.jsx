@@ -27,18 +27,18 @@ const useIcoData = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchIcoData = async () => {
-      try {
-        const contract = new ethers.Contract(
-          presaleContractAddress,
-          ParbAbi,
-          provider
-        );
+  const fetchIcoData = useCallback(async () => {
+    try {
+      console.log("Fetching ICO data...");
+      const contract = new ethers.Contract(
+        presaleContractAddress,
+        ParbAbi,
+        provider
+      );
 
-        const icoState = await contract.getIcoState();
-        const isActive = icoState._icoActive;
-        const currentTier = icoState._currentTier;
+      const icoState = await contract.getIcoState();
+      const isActive = icoState._icoActive;
+      const currentTier = icoState._currentTier;
 
         const tier1TokensBN = await contract.TIER1_TOKENS();
         const tier2TokensBN = await contract.TIER2_TOKENS();
@@ -81,6 +81,17 @@ const useIcoData = () => {
         const minBuyEth = minBuyUsd / ethUsdPrice;
         const maxBuyEth = maxBuyUsd / ethUsdPrice;
 
+        console.log("ICO data fetched successfully:", {
+          isActive,
+          currentTier: tierLabel,
+          tokensSold: parseInt(tokensSold),
+          totalSupply: parseInt(totalSupply),
+          tokenPrice: parseFloat(tokenPrice).toFixed(2),
+          minBuy: minBuyEth.toFixed(6),
+          maxBuy: maxBuyEth.toFixed(6),
+          ethUsdPrice: ethUsdPrice,
+        });
+  
         setIcoData({
           isActive,
           currentTier: tierLabel,
@@ -96,10 +107,14 @@ const useIcoData = () => {
       } finally {
         setIsLoading(false);
       }
-    };
-
-    fetchIcoData();
-  }, [account]);
+    }, []);
+  
+    useEffect(() => {
+      fetchIcoData();
+      const interval = setInterval(fetchIcoData, 30000); // Fetch every 30 seconds
+  
+      return () => clearInterval(interval);
+    }, [fetchIcoData]);
 
   const buyTokens = useCallback(
     async (tokenAmount, ethAmount) => {
@@ -167,7 +182,7 @@ const useIcoData = () => {
     [account, library, icoData.ethUsdPrice]
   );
 
-  return { icoData, isLoading, buyTokens };
+  return { icoData, isLoading, buyTokens, fetchIcoData };
 };
 
 // Helper function to get responsive styles
@@ -314,6 +329,12 @@ function App() {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
+    useEffect(() => {
+    if (account) {
+      fetchIcoData();
+    }
+  }, [account, fetchIcoData]);
+  
   useEffect(() => {
     const handleResize = () => {
       setStyles(getResponsiveStyles());
