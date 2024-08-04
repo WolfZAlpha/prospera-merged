@@ -20,7 +20,7 @@ const doc_data: Document[] = [
   }
 ];
 
-const DocumentArea = () => {
+const DocumentArea: React.FC = () => {
    return (
       <section className="document-area">
          <div className="container">
