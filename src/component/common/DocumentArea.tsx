@@ -1,4 +1,3 @@
-import Link from "next/link"
 import DocumentForm from "../forms/DocumentForm"
 import Image from "next/image"
 
@@ -57,7 +56,6 @@ const DocumentArea: React.FC = () => {
                               </li>
                            ))}
                         </ul>
-                        <Link href="#" className="btn">Download All</Link>
                      </div>
                   </div>
                </div>
