@@ -10,7 +10,7 @@ import ParbAbi from "./pros_abi.json";
 const provider = new ethers.providers.JsonRpcProvider(
   "https://arbitrum-one-rpc.publicnode.com"
 );
-const presaleContractAddress = "0x1806CD54631309778dE011A3ceeE6F88CA9c8DAf";
+const presaleContractAddress = "0x637124d60bb8584a83e64055C5c1266ff7093Be6";
 
 const useIcoData = () => {
   const { account, library } = useEthers();
