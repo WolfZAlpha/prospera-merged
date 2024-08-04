@@ -4,7 +4,21 @@ import Image from "next/image"
 
 import docShape from "@/assets/img/images/document_shape.png"
 
-const doc_data: string[] = ["Whitepaper", "Token Sale Terms", "Presentation", "Lightpaper"]
+interface Document {
+  name: string;
+  link: string;
+}
+
+const doc_data: Document[] = [
+  { 
+    name: "Whitepaper", 
+    link: "/documents/ProsperaWhitepaper.pdf" 
+  },
+  { 
+    name: "White Paper Overview", 
+    link: "https://prosperadefi.substack.com/p/prosperaoverview?r=3hh5aq&utm_campaign=post&utm_medium=web&triedRedirect=true" 
+  }
+];
 
 const DocumentArea = () => {
    return (
@@ -29,12 +43,17 @@ const DocumentArea = () => {
                      <div className="document-wrap">
                         <h4 className="title">Read Documents</h4>
                         <ul className="list-wrap">
-                           {doc_data.map((list, i) => (
+                           {doc_data.map((doc, i) => (
                               <li key={i}>
-                                 <Link href="#">
+                                 <a 
+                                    href={doc.link}
+                                    download={doc.name === "Whitepaper" ? "ProsperaWhitepaper.pdf" : undefined}
+                                    target={doc.name === "Whitepaper" ? undefined : "_blank"}
+                                    rel={doc.name === "Whitepaper" ? undefined : "noopener noreferrer"}
+                                 >
                                     <span className="icon"><i className="fas fa-file-pdf"></i></span>
-                                    {list}
-                                 </Link>
+                                    {doc.name}
+                                 </a>
                               </li>
                            ))}
                         </ul>
