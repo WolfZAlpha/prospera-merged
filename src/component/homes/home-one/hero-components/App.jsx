@@ -1,17 +1,16 @@
-"use client";
 import { useState, useEffect, useCallback, forwardRef } from "react";
 import { Snackbar, LinearProgress, Box, Typography } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { useEtherBalance, useEthers } from "@usedapp/core";
 import { ethers } from "ethers";
-import { useWalletContext } from "@/context/WalletContext"; 
-import useWalletConnection from "@/hooks/useWalletConnection"; 
+import { useWalletContext } from "@/context/WalletContext"; // Adjust the path as necessary
+import useWalletConnection from "@/hooks/useWalletConnection"; // Adjust the path as necessary
 import ParbAbi from "./pros_abi.json";
 
 const provider = new ethers.providers.JsonRpcProvider(
   "https://arbitrum-one-rpc.publicnode.com"
 );
-const presaleContractAddress = "0x637124d60bb8584a83e64055C5c1266ff7093Be6";
+const presaleContractAddress = "0x1806CD54631309778dE011A3ceeE6F88CA9c8DAf";
 
 const useIcoData = () => {
   const { account, library } = useEthers();
@@ -27,96 +26,79 @@ const useIcoData = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchIcoData = useCallback(async () => {
-    if (typeof window === 'undefined') return; // Skip on server-side
-
-    try {
-      console.log("Fetching ICO data...");
-      const contract = new ethers.Contract(
-        presaleContractAddress,
-        ParbAbi,
-        provider
-      );
-
-      const icoState = await contract.getIcoState();
-      const isActive = icoState._icoActive;
-      const currentTier = icoState._currentTier;
-
-      const tier1TokensBN = await contract.TIER1_TOKENS();
-      const tier2TokensBN = await contract.TIER2_TOKENS();
-      const tier3TokensBN = await contract.TIER3_TOKENS();
-      const tier1PriceUSDBN = await contract.TIER1_PRICE_USD();
-      const tier2PriceUSDBN = await contract.TIER2_PRICE_USD();
-      const tier3PriceUSDBN = await contract.TIER3_PRICE_USD();
-      const ethUsdPriceBN = await contract.getEthUsdPrice();
-
-      const ethUsdPrice = parseFloat(
-        ethers.utils.formatUnits(ethUsdPriceBN, 18)
-      );
-
-      const tier1PriceUsd = parseFloat(tier1PriceUSDBN.toString()) / 100;
-      const tier2PriceUsd = parseFloat(tier2PriceUSDBN.toString()) / 100;
-      const tier3PriceUsd = parseFloat(tier3PriceUSDBN.toString()) / 100;
-
-      let tokensSold, totalSupply, tokenPrice;
-
-      if (currentTier === 0) {
-        tokensSold = ethers.utils.formatUnits(icoState._tier1Sold, 0);
-        totalSupply = ethers.utils.formatUnits(tier1TokensBN, 0);
-        tokenPrice = tier1PriceUsd;
-      } else if (currentTier === 1) {
-        tokensSold = ethers.utils.formatUnits(icoState._tier2Sold, 0);
-        totalSupply = ethers.utils.formatUnits(tier2TokensBN, 0);
-        tokenPrice = tier2PriceUsd;
-      } else if (currentTier === 2) {
-        tokensSold = ethers.utils.formatUnits(icoState._tier3Sold, 0);
-        totalSupply = ethers.utils.formatUnits(tier3TokensBN, 0);
-        tokenPrice = tier3PriceUsd;
-      }
-
-      const tierLabels = ["Tier 1", "Tier 2", "Tier 3"];
-      const tierLabel = isActive ? tierLabels[currentTier] : "Inactive";
-
-      const minBuyUsd = 150;
-      const maxBuyUsd = 500000;
-
-      const minBuyEth = minBuyUsd / ethUsdPrice;
-      const maxBuyEth = maxBuyUsd / ethUsdPrice;
-
-      console.log("ICO data fetched successfully:", {
-        isActive,
-        currentTier: tierLabel,
-        tokensSold: parseInt(tokensSold),
-        totalSupply: parseInt(totalSupply),
-        tokenPrice: parseFloat(tokenPrice).toFixed(2),
-        minBuy: minBuyEth.toFixed(6),
-        maxBuy: maxBuyEth.toFixed(6),
-        ethUsdPrice: ethUsdPrice,
-      });
-
-      setIcoData({
-        isActive,
-        currentTier: tierLabel,
-        tokensSold: parseInt(tokensSold),
-        totalSupply: parseInt(totalSupply),
-        tokenPrice: parseFloat(tokenPrice).toFixed(2),
-        minBuy: minBuyEth.toFixed(6),
-        maxBuy: maxBuyEth.toFixed(6),
-        ethUsdPrice: ethUsdPrice,
-      });
-    } catch (error) {
-      console.error("Error fetching ICO data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchIcoData();
-    const interval = setInterval(fetchIcoData, 30000); // Fetch every 30 seconds
+    const fetchIcoData = async () => {
+      try {
+        const contract = new ethers.Contract(
+          presaleContractAddress,
+          ParbAbi,
+          provider
+        );
 
-    return () => clearInterval(interval);
-  }, [fetchIcoData]);
+        const icoState = await contract.getIcoState();
+        const isActive = icoState._icoActive;
+        const currentTier = icoState._currentTier;
+
+        const tier1TokensBN = await contract.TIER1_TOKENS();
+        const tier2TokensBN = await contract.TIER2_TOKENS();
+        const tier3TokensBN = await contract.TIER3_TOKENS();
+        const tier1PriceUSDBN = await contract.TIER1_PRICE_USD();
+        const tier2PriceUSDBN = await contract.TIER2_PRICE_USD();
+        const tier3PriceUSDBN = await contract.TIER3_PRICE_USD();
+        const ethUsdPriceBN = await contract.getEthUsdPrice();
+
+        const ethUsdPrice = parseFloat(
+          ethers.utils.formatUnits(ethUsdPriceBN, 18)
+        );
+
+        const tier1PriceUsd = parseFloat(tier1PriceUSDBN.toString()) / 100;
+        const tier2PriceUsd = parseFloat(tier2PriceUSDBN.toString()) / 100;
+        const tier3PriceUsd = parseFloat(tier3PriceUSDBN.toString()) / 100;
+
+        let tokensSold, totalSupply, tokenPrice;
+
+        if (currentTier === 0) {
+          tokensSold = ethers.utils.formatUnits(icoState._tier1Sold, 0);
+          totalSupply = ethers.utils.formatUnits(tier1TokensBN, 0);
+          tokenPrice = tier1PriceUsd;
+        } else if (currentTier === 1) {
+          tokensSold = ethers.utils.formatUnits(icoState._tier2Sold, 0);
+          totalSupply = ethers.utils.formatUnits(tier2TokensBN, 0);
+          tokenPrice = tier2PriceUsd;
+        } else if (currentTier === 2) {
+          tokensSold = ethers.utils.formatUnits(icoState._tier3Sold, 0);
+          totalSupply = ethers.utils.formatUnits(tier3TokensBN, 0);
+          tokenPrice = tier3PriceUsd;
+        }
+
+        const tierLabels = ["Tier 1", "Tier 2", "Tier 3"];
+        const tierLabel = isActive ? tierLabels[currentTier] : "Inactive";
+
+        const minBuyUsd = 150;
+        const maxBuyUsd = 500000;
+
+        const minBuyEth = minBuyUsd / ethUsdPrice;
+        const maxBuyEth = maxBuyUsd / ethUsdPrice;
+
+        setIcoData({
+          isActive,
+          currentTier: tierLabel,
+          tokensSold: parseInt(tokensSold),
+          totalSupply: parseInt(totalSupply),
+          tokenPrice: parseFloat(tokenPrice).toFixed(2),
+          minBuy: minBuyEth.toFixed(6),
+          maxBuy: maxBuyEth.toFixed(6),
+          ethUsdPrice: ethUsdPrice,
+        });
+      } catch (error) {
+        console.error("Error fetching ICO data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchIcoData();
+  }, [account]);
 
   const buyTokens = useCallback(
     async (tokenAmount, ethAmount) => {
@@ -184,30 +166,39 @@ const useIcoData = () => {
     [account, library, icoData.ethUsdPrice]
   );
 
-  return { icoData, isLoading, buyTokens, fetchIcoData };
+  return { icoData, isLoading, buyTokens };
 };
 
 const getResponsiveStyles = () => {
-  const defaultStyles = {
-    progressBarText: {
-      fontSize: "1rem",
-    },
-    tokenInfoText: {
-      fontSize: "0.875rem",
-    },
-    buttonText: {
-      fontSize: "1rem",
-    },
-  };
-
   if (typeof window === 'undefined') {
-    return defaultStyles;
+    // Default styles for server-side rendering
+    return {
+      progressBarText: {
+        fontSize: "1rem",
+      },
+      tokenInfoText: {
+        fontSize: "0.875rem",
+      },
+      buttonText: {
+        fontSize: "1rem",
+      },
+    };
   }
 
   const width = window.innerWidth;
 
   if (width <= 600) {
-    return defaultStyles;
+    return {
+      progressBarText: {
+        fontSize: "1rem",
+      },
+      tokenInfoText: {
+        fontSize: "0.875rem",
+      },
+      buttonText: {
+        fontSize: "1rem",
+      },
+    };
   }
 
   return {
@@ -309,41 +300,32 @@ const ProgressBar = ({ current, goal, styles }) => {
 
 function App() {
   const { account } = useEthers();
-  const { icoData, isLoading, buyTokens, fetchIcoData } = useIcoData();
+  const { icoData, isLoading, buyTokens } = useIcoData();
   const [amountUsd, setAmountUsd] = useState("0");
   const [errorMessage, setErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { isWalletConnected } = useWalletContext();
   const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
   const [styles, setStyles] = useState(getResponsiveStyles());
-  const [isClient, setIsClient] = useState(false);
 
   const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (account) {
-      fetchIcoData();
-    }
-  }, [account, fetchIcoData]);
-  
-  useEffect(() => {
-    if (isClient) {
-      const handleResize = () => {
-        setStyles(getResponsiveStyles());
-      };
-
+    const handleResize = () => {
       setStyles(getResponsiveStyles());
-      window.addEventListener('resize', handleResize);
+    };
 
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, [isClient]);
+    // Set initial styles
+    setStyles(getResponsiveStyles());
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isWalletConnected) {
@@ -445,10 +427,6 @@ function App() {
       contract.off(icoTierChangedFilter, handleIcoTierChanged);
     };
   }, [account]);
-
-  if (!isClient) {
-    return null; // or a loading spinner
-  }
 
   if (isLoading) {
     return <div>Loading...</div>;
