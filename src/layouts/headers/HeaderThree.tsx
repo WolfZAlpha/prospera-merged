@@ -6,8 +6,8 @@ import Image from "next/image";
 import NavMenu from "./Menu/NavMenu";
 import Sidebar from "./Menu/Sidebar";
 import HeaderOffcanvas from "./Menu/HeaderOffcanvas";
-import useWalletConnection from "@/hooks/useWalletConnection"; // Adjust the path as needed
-import { useWalletContext } from "@/context/WalletContext"; // Adjust the path as necessary
+import useWalletConnection from "@/hooks/useWalletConnection";
+import { useWalletContext } from "@/context/WalletContext";
 
 import logo_1 from "@/assets/img/logo/logo.png";
 
@@ -17,11 +17,13 @@ const HeaderThree = () => {
   const [offCanvas, setOffCanvas] = useState<boolean>(false);
   const { connectWallet, disconnectWallet } = useWalletConnection();
   const { isWalletConnected } = useWalletContext();
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(true); // Default to true for mobile-first approach
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 992); // Adjust breakpoint for mobile
+      setIsMobile(window.innerWidth < 992);
     };
 
     handleResize(); // Check initially
@@ -57,161 +59,163 @@ const HeaderThree = () => {
     padding: "6px 12px",
     borderRadius: "4px",
     cursor: "pointer",
-    fontSize: "0.875rem", // Smaller font size
+    fontSize: "0.875rem",
     transition: "background-color 0.3s, color 0.3s, border 0.3s",
   };
 
-  const logoWidth = isMobile ? 120 : 150; // Ensure width is a number
+  const logoWidth = isMobile ? 120 : 150;
 
   return (
     <>
       <header id="header" style={{ position: "relative" }}>
-        <div
-          id="sticky-header"
-          className={`menu-area transparent-header ${
-            sticky ? "sticky-menu" : ""
-          }`}
-          style={{
-            width: "100%",
-            background: sticky ? "rgba(255, 255, 255, 0.9)" : "transparent",
-            transition: "background 0.3s",
-          }}
-        >
-          <div className="container custom-container">
-            <div className="row">
-              <div className="col-12">
-                <div
-                  className="menu-wrap"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <nav
-                    className="menu-nav"
+        {isClient && (
+          <div
+            id="sticky-header"
+            className={`menu-area transparent-header ${
+              sticky ? "sticky-menu" : ""
+            }`}
+            style={{
+              width: "100%",
+              background: sticky ? "rgba(255, 255, 255, 0.9)" : "transparent",
+              transition: "background 0.3s",
+            }}
+          >
+            <div className="container custom-container">
+              <div className="row">
+                <div className="col-12">
+                  <div
+                    className="menu-wrap"
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      width: "100%",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <div
-                      className="logo"
-                      style={{ flex: "1", display: "flex", alignItems: "center" }}
-                    >
-                      <Link href="/">
-                        <Image
-                          src={logo_1}
-                          alt="Logo"
-                          width={logoWidth} // Set to a number
-                          height={50} // Set to a number
-                          style={{ height: "auto" }}
-                        />
-                      </Link>
-                    </div>
-                    <div
-                      className="navbar-wrap main-menu"
-                      style={{ flex: "3", display: isMobile ? "none" : "flex" }}
-                    >
-                      <NavMenu />
-                    </div>
-                    <div className="header-action" style={headerActionStyle}>
-                      <ul className="list-wrap">
-                        <li className="header-login">
-                          {isWalletConnected ? (
-                            <button
-                              className="connect-btn"
-                              onClick={disconnectWallet}
-                              style={buttonStyle}
-                            >
-                              Disconnect
-                              <i
-                                className="connect-btn-icon fas fa-wallet"
-                                style={{ marginLeft: "8px" }}
-                              ></i>
-                            </button>
-                          ) : (
-                            <button
-                              className="connect-btn"
-                              onClick={connectWallet}
-                              style={buttonStyle}
-                            >
-                              Connect Wallet
-                              <i
-                                className="connect-btn-icon fas fa-wallet"
-                                style={{ marginLeft: "8px" }}
-                              ></i>
-                            </button>
-                          )}
-                        </li>
-                      </ul>
-                    </div>
-                    <div
-                      onClick={() => setIsActive(true)}
-                      className="mobile-nav-toggler"
-                      style={mobileNavTogglerStyle}
+                    <nav
+                      className="menu-nav"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "100%",
+                      }}
                     >
                       <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          height: "44px",
-                          backgroundColor: "#01ff02",
-                          borderRadius: "50%",
-                        }}
+                        className="logo"
+                        style={{ flex: "1", display: "flex", alignItems: "center" }}
                       >
-                        <i
-                          className="fas fa-bars"
-                          style={{
-                            fontSize: "24px",
-                            cursor: "pointer",
-                            color: "#000", // Ensure the icon is visible on green
-                          }}
-                        ></i>
+                        <Link href="/">
+                          <Image
+                            src={logo_1}
+                            alt="Logo"
+                            width={logoWidth}
+                            height={50}
+                            style={{ height: "auto" }}
+                          />
+                        </Link>
                       </div>
-                    </div>
-                  </nav>
-                </div>
-                <div
-                  className="mobile-wallet-action"
-                  style={mobileWalletActionStyle}
-                >
-                  <ul className="list-wrap">
-                    <li className="header-login">
-                      {isWalletConnected ? (
-                        <button
-                          className="connect-btn"
-                          onClick={disconnectWallet}
-                          style={buttonStyle}
+                      <div
+                        className="navbar-wrap main-menu"
+                        style={{ flex: "3", display: isMobile ? "none" : "flex" }}
+                      >
+                        <NavMenu />
+                      </div>
+                      <div className="header-action" style={headerActionStyle}>
+                        <ul className="list-wrap">
+                          <li className="header-login">
+                            {isWalletConnected ? (
+                              <button
+                                className="connect-btn"
+                                onClick={disconnectWallet}
+                                style={buttonStyle}
+                              >
+                                Disconnect
+                                <i
+                                  className="connect-btn-icon fas fa-wallet"
+                                  style={{ marginLeft: "8px" }}
+                                ></i>
+                              </button>
+                            ) : (
+                              <button
+                                className="connect-btn"
+                                onClick={connectWallet}
+                                style={buttonStyle}
+                              >
+                                Connect Wallet
+                                <i
+                                  className="connect-btn-icon fas fa-wallet"
+                                  style={{ marginLeft: "8px" }}
+                                ></i>
+                              </button>
+                            )}
+                          </li>
+                        </ul>
+                      </div>
+                      <div
+                        onClick={() => setIsActive(true)}
+                        className="mobile-nav-toggler"
+                        style={mobileNavTogglerStyle}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "44px",
+                            backgroundColor: "#01ff02",
+                            borderRadius: "50%",
+                          }}
                         >
-                          Disconnect
                           <i
-                            className="connect-btn-icon fas fa-wallet"
-                            style={{ marginLeft: "8px" }}
+                            className="fas fa-bars"
+                            style={{
+                              fontSize: "24px",
+                              cursor: "pointer",
+                              color: "#000",
+                            }}
                           ></i>
-                        </button>
-                      ) : (
-                        <button
-                          className="connect-btn"
-                          onClick={connectWallet}
-                          style={buttonStyle}
-                        >
-                          Connect Wallet
-                          <i
-                            className="connect-btn-icon fas fa-wallet"
-                            style={{ marginLeft: "8px" }}
-                          ></i>
-                        </button>
-                      )}
-                    </li>
-                  </ul>
+                        </div>
+                      </div>
+                    </nav>
+                  </div>
+                  <div
+                    className="mobile-wallet-action"
+                    style={mobileWalletActionStyle}
+                  >
+                    <ul className="list-wrap">
+                      <li className="header-login">
+                        {isWalletConnected ? (
+                          <button
+                            className="connect-btn"
+                            onClick={disconnectWallet}
+                            style={buttonStyle}
+                          >
+                            Disconnect
+                            <i
+                              className="connect-btn-icon fas fa-wallet"
+                              style={{ marginLeft: "8px" }}
+                            ></i>
+                          </button>
+                        ) : (
+                          <button
+                            className="connect-btn"
+                            onClick={connectWallet}
+                            style={buttonStyle}
+                          >
+                            Connect Wallet
+                            <i
+                              className="connect-btn-icon fas fa-wallet"
+                              style={{ marginLeft: "8px" }}
+                            ></i>
+                          </button>
+                        )}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </header>
       <Sidebar style={false} isActive={isActive} setIsActive={setIsActive} />
       <HeaderOffcanvas offCanvas={offCanvas} setOffCanvas={setOffCanvas} />
