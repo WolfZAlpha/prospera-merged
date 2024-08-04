@@ -1,10 +1,11 @@
+"use client";
 import { useState, useEffect, useCallback, forwardRef } from "react";
 import { Snackbar, LinearProgress, Box, Typography } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { useEtherBalance, useEthers } from "@usedapp/core";
 import { ethers } from "ethers";
-import { useWalletContext } from "@/context/WalletContext"; // Adjust the path as necessary
-import useWalletConnection from "@/hooks/useWalletConnection"; // Adjust the path as necessary
+import { useWalletContext } from "@/context/WalletContext"; 
+import useWalletConnection from "@/hooks/useWalletConnection"; 
 import ParbAbi from "./pros_abi.json";
 
 const provider = new ethers.providers.JsonRpcProvider(
@@ -171,6 +172,21 @@ const useIcoData = () => {
 
 // Helper function to get responsive styles
 const getResponsiveStyles = () => {
+  if (typeof window === 'undefined') {
+    // Default styles for server-side rendering
+    return {
+      progressBarText: {
+        fontSize: "1rem",
+      },
+      tokenInfoText: {
+        fontSize: "0.875rem",
+      },
+      buttonText: {
+        fontSize: "1rem",
+      },
+    };
+  }
+
   const width = window.innerWidth;
 
   if (width <= 600) {
@@ -179,7 +195,7 @@ const getResponsiveStyles = () => {
         fontSize: "1rem",
       },
       tokenInfoText: {
-        fontSize: "0.875rem", // 14px
+        fontSize: "0.875rem",
       },
       buttonText: {
         fontSize: "1rem",
@@ -192,7 +208,7 @@ const getResponsiveStyles = () => {
       fontSize: "1.5rem",
     },
     tokenInfoText: {
-      fontSize: "1rem", // 16px
+      fontSize: "1rem",
     },
     buttonText: {
       fontSize: "1.25rem",
@@ -200,9 +216,8 @@ const getResponsiveStyles = () => {
   };
 };
 
-const ProgressBar = ({ current, goal }) => {
+const ProgressBar = ({ current, goal, styles }) => {
   const progress = goal > 0 ? (current / goal) * 100 : 0;
-  const styles = getResponsiveStyles();
 
   return (
     <Box
@@ -292,12 +307,27 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { isWalletConnected } = useWalletContext();
-  const { walletInfo, connectWallet, disconnectWallet } =
-    useWalletConnection();
+  const { walletInfo, connectWallet, disconnectWallet } = useWalletConnection();
+  const [styles, setStyles] = useState(getResponsiveStyles());
 
   const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setStyles(getResponsiveStyles());
+    };
+
+    // Set initial styles
+    setStyles(getResponsiveStyles());
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isWalletConnected) {
@@ -400,8 +430,6 @@ function App() {
     };
   }, [account]);
 
-  const styles = getResponsiveStyles();
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -450,6 +478,7 @@ function App() {
                 <ProgressBar
                   current={icoData.tokensSold}
                   goal={icoData.totalSupply}
+                  styles={styles}
                 />
               </div>
 
