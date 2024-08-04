@@ -3019,7 +3019,7 @@ label {
 /* Home 2 ---------------------------------- */
 .home-purple-gradient {
     --tg-primary-color: #01ff02;
-    --tg-theme-color2: #5729D6;
+    --tg-theme-color2: #000;
     --tg-black2: #10121D;
     --tg-secondary-color: #010314;
     --tg-secondary-color2: #0F101E;
