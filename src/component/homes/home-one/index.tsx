@@ -1,4 +1,3 @@
-import Brand from "./Brand"
 import ChooseArea from "./ChooseArea"
 import FaqArea from "./FaqArea"
 import Hero from "./Hero"
@@ -19,7 +18,6 @@ const HomeOne = () => {
       <IntroArea />
       <RoadMap />
       <FaqArea />
-      <Brand />
       <br />
       <DocumentArea />
       < br />
