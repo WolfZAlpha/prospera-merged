@@ -2023,7 +2023,7 @@ label {
     background: var(--tg-primary-color);
 }
 .document-wrap {
-    background: var(--tg-secondary-color);
+    background: rgb(0, 0, 0);
     border: 1px solid #01ff02;
     padding: 60px 64px 50px;
     border-radius: 15px;
@@ -3019,10 +3019,10 @@ label {
 /* Home 2 ---------------------------------- */
 .home-purple-gradient {
     --tg-primary-color: #01ff02;
-    --tg-theme-color2: #000;
-    --tg-black2: #10121D;
-    --tg-secondary-color: #010314;
-    --tg-secondary-color2: #0F101E;
+    --tg-theme-color2: #000000;
+    --tg-black2: #000000;
+    --tg-secondary-color: #000000;
+    --tg-secondary-color2: #000000;
 }
 .btn5,
 .btn3,
