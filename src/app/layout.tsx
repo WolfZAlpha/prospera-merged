@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning={isDev}>
       <head>
         <meta name="description" content="PROSPERA – is a cutting-edge De-Fi company at the forefront of innovation in the Artificial Intelligence sector." />
-        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body suppressHydrationWarning={true}>
         <DAppProvider config={config}>
