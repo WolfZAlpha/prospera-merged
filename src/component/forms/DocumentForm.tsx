@@ -19,12 +19,28 @@ const schema = yup
    .required();
 
 const DocumentForm = () => {
-
    const { register, handleSubmit, reset, formState: { errors }, } = useForm<FormData>({ resolver: yupResolver(schema), });
-   const onSubmit = () => {
-      const notify = () => toast('Message sent successfully', { position: 'top-center' });
-      notify();
-      reset();
+   
+   const onSubmit = async (data: FormData) => {
+      try {
+         const response = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+         });
+
+         if (response.ok) {
+            toast.success('Message sent successfully', { position: 'top-center' });
+            reset();
+         } else {
+            toast.error('Failed to send message', { position: 'top-center' });
+         }
+      } catch (error) {
+         console.error('Error:', error);
+         toast.error('An error occurred', { position: 'top-center' });
+      }
    };
 
    return (
